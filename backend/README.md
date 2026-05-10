@@ -164,25 +164,6 @@ Calcula a pontuação da partida. A lógica é:
 
 ---
 
-## Fluxo de integração (React Native)
-
-```
-1. GET /generate_quiz
-   → salva questions[] e total_possible_points no estado
-
-2. Exibe perguntas uma a uma
-   → usuário seleciona uma opção
-   → registra true/false em answers[]
-
-3. Ao errar OU terminar todas as perguntas:
-   POST /score com { answers, points_per_question }
-   → exibe tela de resultado com score e correct
-
-4. (Opcional) Botão de dica durante a partida:
-   POST /help com { question, options }
-   → exibe hint e explanation em modal
-```
-
 ---
 
 ## .gitignore recomendado
