@@ -10,13 +10,13 @@ A API segue uma **arquitetura em camadas** com três níveis bem separados. Cada
 
 ```
 ┌─────────────────────────────────────────┐
-│           Requisição HTTP               │
+│     Requisição HTTP (web ou mobile)     │
 └────────────────────┬────────────────────┘
                      ▼
 ┌─────────────────────────────────────────┐
 │             main.py                     │
 │         🔀 Camada de Rotas              │
-│  Recebe, valida e responde requisições  │
+│  CORS · Logging · Rotas · Erros globais │
 └────────────────────┬────────────────────┘
                      ▼
 ┌─────────────────────────────────────────┐
@@ -64,15 +64,32 @@ backend/
 
 ### `app/main.py` — Rotas HTTP
 
-Entrypoint da API. Define os endpoints e conecta cada rota ao serviço.
+Entrypoint da API. Define os endpoints, configura middlewares e conecta cada rota ao serviço.
 
 **Responsabilidades:**
-- Declarar as rotas (`GET /`, `GET /generate_quiz`, `POST /help`, `POST /score`)
+
+- Configurar o middleware de **CORS** para aceitar requisições de qualquer origem (web e mobile)
+- Registrar um **handler global de erros** que retorna JSON amigável em vez de stack trace
+- Configurar **logging** para monitorar requisições em tempo real
+- Declarar as rotas (`GET /`, `GET /generate_quiz`, `POST /help`, `POST /score`) com tags para o Swagger
 - Validar dados de entrada automaticamente via Pydantic + FastAPI
 - Delegar a lógica para o `QuizService`
-- Capturar erros e retornar HTTP 500 com mensagem legível
 
 > ⚠️ Não contém lógica de negócio — só roteia.
+
+**CORS configurado:**
+
+```python
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],      # qualquer origem — web, mobile, ngrok
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
+
+> Em produção, substitua `"*"` pelo domínio real do frontend.
 
 ---
 
@@ -161,7 +178,7 @@ O coração da aplicação. Contém três métodos:
 ## 🔄 Fluxo Completo de uma Partida
 
 ```
-Frontend                    Backend                      OpenAI
+Web / Mobile                Backend                      OpenAI
    │                           │                            │
    │── GET /generate_quiz ───► │                            │
    │                           │── chat.completions ──────► │
@@ -178,6 +195,8 @@ Frontend                    Backend                      OpenAI
    │   { answers, points }     │  (cálculo local, sem IA)   │
    │◄── ScoreResponse ───────── │                            │
 ```
+
+O CORS está configurado para aceitar requisições de qualquer origem, então tanto o app React Native quanto uma aplicação web conseguem consumir a API sem bloqueios.
 
 ---
 
