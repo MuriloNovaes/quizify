@@ -56,7 +56,9 @@ uvicorn app.main:app --reload
 ngrok http 8000
 ```
 
-Use a URL gerada (`https://xxxx.ngrok-free.app`) como `BASE_URL` no frontend.
+Use a URL gerada (`https://xxxx.ngrok-free.app`) como `BASE_URL` no frontend web ou mobile.
+
+> A API já está configurada com **CORS aberto** (`allow_origins=["*"]`), então tanto React Native quanto aplicações web conseguem consumir sem bloqueios. Em produção, restrinja para o domínio do seu frontend.
 
 ---
 
@@ -163,6 +165,27 @@ Calcula a pontuação da partida. A lógica é:
 > `points_per_question` é o array de `points` de cada pergunta na mesma ordem.
 
 ---
+
+---
+
+## Fluxo de integração (React Native / Web)
+
+```
+1. GET /generate_quiz
+   → salva questions[] e total_possible_points no estado
+
+2. Exibe perguntas uma a uma
+   → usuário seleciona uma opção
+   → registra true/false em answers[]
+
+3. Ao errar OU terminar todas as perguntas:
+   POST /score com { answers, points_per_question }
+   → exibe tela de resultado com score e correct
+
+4. (Opcional) Botão de dica durante a partida:
+   POST /help com { question, options }
+   → exibe hint e explanation em modal
+```
 
 ---
 
