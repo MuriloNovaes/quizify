@@ -1,6 +1,7 @@
 import logging
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from app.models.quiz_models import QuizResponse, HelpRequest, HelpResponse, ScoreRequest, ScoreResponse
 from app.services.quiz_service import QuizService
 
@@ -15,6 +16,15 @@ app = FastAPI(
     title="Quizify API",
     description="API Inteligente para geração de quizzes dinâmicos usando OpenAI.",
     version="2.1.0"
+)
+
+# CORS — permite requisições do frontend web e mobile
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # em produção, substitua por domínios específicos
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Handler global para capturar erros inesperados e retornar JSON amigável
