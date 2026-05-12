@@ -1,20 +1,20 @@
 import uuid
 from app.services.openai_service import OpenAIService
-from app.models.quiz_models import GeneratedQuestion, QuizResponse, HelpResponse, POINTS_BY_DIFFICULTY
+from app.models.quiz_models import Difficulty, GeneratedQuestion, QuizResponse, HelpResponse, POINTS_BY_DIFFICULTY
 
 class QuizService:
     def __init__(self):
         self.openai_service = OpenAIService()
 
-    def generate_quiz(self) -> QuizResponse:
+    def generate_quiz(self, theme: str = "Tecnologia") -> QuizResponse:
         system_prompt = (
-            "Você é um gerador de quiz especializado em tecnologia. "
+            f"Você é um gerador de quiz especializado em {theme}. "
             "Crie perguntas variadas cobrindo: linguagens de programação, frameworks, IDEs, "
             "estruturas de dados e algoritmos, banco de dados, backend, frontend e dados."
         )
 
-        user_prompt = """
-        Gere um quiz de 12 perguntas de tecnologia distribuídas assim:
+        user_prompt = f"""
+        Gere um quiz de 12 perguntas sobre '{theme}' distribuídas assim:
         - 4 perguntas de dificuldade 'fácil'
         - 4 perguntas de dificuldade 'média'
         - 4 perguntas de dificuldade 'difícil'
@@ -29,21 +29,21 @@ class QuizService:
         - Uma breve explicação da resposta correta
 
         Retorne JSON com a chave 'questions':
-        {
+        {{
             "questions": [
-                {
+                {{
                     "question": "Texto da pergunta",
                     "options": [
-                        {"text": "Opção 1", "is_correct": false},
-                        {"text": "Opção 2", "is_correct": true},
-                        {"text": "Opção 3", "is_correct": false},
-                        {"text": "Opção 4", "is_correct": false}
+                        {{"text": "Opção 1", "is_correct": false}},
+                        {{"text": "Opção 2", "is_correct": true}},
+                        {{"text": "Opção 3", "is_correct": false}},
+                        {{"text": "Opção 4", "is_correct": false}}
                     ],
                     "difficulty": "fácil",
                     "explanation": "Explicação breve"
-                }
+                }}
             ]
-        }
+        }}
         """
 
         data = self.openai_service.generate_chat_completion(system_prompt, user_prompt)
@@ -52,9 +52,10 @@ class QuizService:
         questions = []
         for q in questions_data:
             difficulty = q.get("difficulty", "fácil")
+            diff_enum = Difficulty(difficulty)
             questions.append(GeneratedQuestion(
                 **q,
-                points=POINTS_BY_DIFFICULTY.get(difficulty, 10)
+                points=POINTS_BY_DIFFICULTY.get(diff_enum, 10)
             ))
 
         total_possible = sum(q.points for q in questions)
