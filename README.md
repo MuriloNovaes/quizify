@@ -10,8 +10,6 @@
 |---|---|
 | Murilo Barbosa Novaes | [@MuriloNovaes](https://github.com/MuriloNovaes) |
 | Kauã Santos Simplicio | — |
-| Gustavo Mattos | — |
-| Pedro Benevides | — |
 | Rodrigo Illydio | — |
 
 ---
