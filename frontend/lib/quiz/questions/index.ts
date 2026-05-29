@@ -1,0 +1,128 @@
+import type { QuizLevel, QuizThemeId } from '@/lib/quiz/themes';
+import type { QuizQuestion } from '@/lib/quiz/questions/types';
+
+import { AI_QUESTIONS } from './ai';
+import { AUTH_TOKENS_QUESTIONS } from './auth-tokens';
+import { DATA_STRUCTURES_QUESTIONS } from './data-structures';
+import { DATABASES_QUESTIONS } from './databases';
+import { LANGUAGES_QUESTIONS } from './languages';
+import { LOGIC_QUESTIONS } from './logic';
+import { NETWORKS_QUESTIONS } from './networks';
+
+/**
+ * Banco completo de questões (C-02, G-04).
+ *
+ * Cobertura por tema (`G-04` - 30 totais = 3 níveis × 10):
+ * - languages, logic, data-structures, networks, databases, auth-tokens, ai
+ */
+export const QUESTION_BANK: readonly QuizQuestion[] = [
+  ...LANGUAGES_QUESTIONS,
+  ...LOGIC_QUESTIONS,
+  ...DATA_STRUCTURES_QUESTIONS,
+  ...NETWORKS_QUESTIONS,
+  ...DATABASES_QUESTIONS,
+  ...AUTH_TOKENS_QUESTIONS,
+  ...AI_QUESTIONS,
+];
+
+/** Embaralhamento determinístico ou aleatório (mantém pureza em testes futuros). */
+function shuffleArray<T>(arr: readonly T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j]!, a[i]!];
+  }
+  return a;
+}
+
+/**
+ * Padrão fixo de dificuldade para uma tentativa de 12 questões (G-02 + G-04).
+ *
+ * Sequência: 4 fáceis → 4 médias → 4 difíceis.
+ * Resultado: 4 fáceis + 4 médias + 4 difíceis, sempre nessa ordem.
+ */
+export const QUIZ_LEVEL_PATTERN: readonly QuizLevel[] = [
+  'easy',
+  'easy',
+  'easy',
+  'easy',
+  'medium',
+  'medium',
+  'medium',
+  'medium',
+  'hard',
+  'hard',
+  'hard',
+  'hard',
+] as const;
+
+/**
+ * Devolve até `count` questões aleatórias do `themeId` e `level` informados.
+ */
+export function pickQuestions(
+  themeId: QuizThemeId,
+  level: QuizLevel,
+  count = 10
+): QuizQuestion[] {
+  const pool = QUESTION_BANK.filter((q) => q.themeId === themeId && q.level === level);
+  return shuffleArray(pool).slice(0, count);
+}
+
+/**
+ * Monta uma tentativa misturando dificuldades de um único tema (legado / testes).
+ */
+export function pickMixedQuestions(
+  themeId: QuizThemeId,
+  pattern: readonly QuizLevel[] = QUIZ_LEVEL_PATTERN
+): QuizQuestion[] {
+  const pools: Record<QuizLevel, QuizQuestion[]> = {
+    easy: shuffleArray(QUESTION_BANK.filter((q) => q.themeId === themeId && q.level === 'easy')),
+    medium: shuffleArray(QUESTION_BANK.filter((q) => q.themeId === themeId && q.level === 'medium')),
+    hard: shuffleArray(QUESTION_BANK.filter((q) => q.themeId === themeId && q.level === 'hard')),
+  };
+
+  const cursor: Record<QuizLevel, number> = { easy: 0, medium: 0, hard: 0 };
+  const out: QuizQuestion[] = [];
+
+  for (const level of pattern) {
+    const pool = pools[level];
+    if (pool.length === 0) continue;
+    const idx = cursor[level] % pool.length;
+    cursor[level] += 1;
+    out.push(pool[idx]!);
+  }
+  return out;
+}
+
+/**
+ * Monta 10 questões mistas a partir de **todo o banco** (vários assuntos).
+ * O tema fica implícito no texto de cada pergunta — alinhado ao fluxo com backend.
+ */
+export function pickMixedQuestionsFromBank(
+  pattern: readonly QuizLevel[] = QUIZ_LEVEL_PATTERN
+): QuizQuestion[] {
+  const pools: Record<QuizLevel, QuizQuestion[]> = {
+    easy: shuffleArray(QUESTION_BANK.filter((q) => q.level === 'easy')),
+    medium: shuffleArray(QUESTION_BANK.filter((q) => q.level === 'medium')),
+    hard: shuffleArray(QUESTION_BANK.filter((q) => q.level === 'hard')),
+  };
+
+  const cursor: Record<QuizLevel, number> = { easy: 0, medium: 0, hard: 0 };
+  const out: QuizQuestion[] = [];
+
+  for (const level of pattern) {
+    const pool = pools[level];
+    if (pool.length === 0) continue;
+    const idx = cursor[level] % pool.length;
+    cursor[level] += 1;
+    out.push(pool[idx]!);
+  }
+  return out;
+}
+
+/** Total de questões disponíveis por (tema, nível). Útil para validação. */
+export function countQuestions(themeId: QuizThemeId, level: QuizLevel): number {
+  return QUESTION_BANK.filter((q) => q.themeId === themeId && q.level === level).length;
+}
+
+export type { QuizQuestion };
