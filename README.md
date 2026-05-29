@@ -9,7 +9,7 @@
 | Nome | GitHub |
 |---|---|
 | Murilo Barbosa Novaes | [@MuriloNovaes](https://github.com/MuriloNovaes) |
-| Kauã Santos Simplicio | — |
+| Kauã Santos Simplicio | [@KauaSimplicioDEV]([https://github.com/MuriloNovaes](https://github.com/KauaSimplicioDEV)) |
 | Rodrigo Illydio | — |
 
 ---
