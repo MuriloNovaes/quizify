@@ -59,11 +59,15 @@ export function useResponsive(): ResponsiveLayout {
       ? Math.max((width - TAB_BAR_MAX_WIDTH) / 2, 32)
       : 18;
 
+    // `maxWidth` só em tablets. No celular, aplicar maxWidth = contentMaxWidth
+    // quebra o layout na web: no render estático/primeira hidratação,
+    // `useWindowDimensions` retorna width 0 → maxWidth 0 → conteúdo colapsa
+    // (texto quebra letra a letra) até um resize. width '100%' já basta aqui.
     const contentFrameStyle: ViewStyle = {
       width: '100%',
-      maxWidth: contentMaxWidth,
       alignSelf: 'center',
       paddingHorizontal: horizontalPadding,
+      ...(isTablet ? { maxWidth: contentMaxWidth } : null),
     };
 
     return {
