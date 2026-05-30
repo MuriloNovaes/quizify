@@ -63,7 +63,7 @@ cp .env.example .env
 Edite `.env` e coloque a URL real (sem `/` no final):
 
 ```env
-EXPO_PUBLIC_API_URL=https://quizify-api.onrender.com
+EXPO_PUBLIC_API_URL=https://quizify-api-339f.onrender.com
 ```
 
 Reinicie o Expo após alterar o `.env`:
@@ -78,7 +78,62 @@ O app usa `lib/api-config.ts` — com a variável definida, entra em **modo cone
 
 ---
 
-## 4. Build de produção (EAS)
+## 4. Web estática (cenário 3 — Vercel ou similar)
+
+### Gerar o build (já feito localmente)
+
+```bash
+cd frontend
+npx expo export --platform web
+```
+
+Saída: pasta `frontend/dist/` (não commitar — está no `.gitignore`).
+
+A URL da API é embutida no build a partir de `EXPO_PUBLIC_API_URL` no `.env` no momento do export.
+
+### Publicar na Vercel
+
+Há `vercel.json` na **raiz do repo** e em `frontend/` — use **uma** das opções:
+
+**Opção A — Raiz do repositório (recomendado)**
+
+1. [vercel.com](https://vercel.com) → **Add New Project** → importe o repo.
+2. **Root Directory:** deixe vazio (`.`).
+3. O Vercel usa o `vercel.json` da raiz → build em `frontend/`, saída em `frontend/dist`.
+4. **Environment Variables** → `EXPO_PUBLIC_API_URL` = `https://quizify-api-339f.onrender.com`
+5. **Redeploy**.
+
+**Opção B — Só a pasta frontend**
+
+1. **Root Directory:** `frontend`
+2. Usa `frontend/vercel.json` → saída `dist`.
+3. Mesma variável `EXPO_PUBLIC_API_URL`.
+
+> Se aparecer `404: NOT_FOUND` (página da Vercel, não do app): quase sempre **Output Directory** errado ou deploy sem arquivos. Confira em **Deployments → Build Logs** se `frontend/dist/index.html` foi gerado. **Redeploy** após corrigir.
+
+URL final: algo como `https://quizify-app.vercel.app`.
+
+### Deploy rápido só da pasta `dist` (sem rebuild na Vercel)
+
+```bash
+cd frontend/dist
+npx vercel --prod
+```
+
+Use isso se o `dist` local já foi gerado com o `.env` correto.
+
+### Testar localmente o build de produção
+
+```bash
+cd frontend
+npx serve dist
+```
+
+Abra a URL que o `serve` mostrar (ex.: http://localhost:3000).
+
+---
+
+## 5. Build mobile (EAS)
 
 1. Instale a CLI: `npm install -g eas-cli`
 2. Login: `eas login`
@@ -93,17 +148,22 @@ As variáveis em `eas.json` → `env` → `EXPO_PUBLIC_API_URL` são embutidas n
 
 ---
 
-## 5. Checklist pós-deploy
+## 6. Checklist pós-deploy
 
-- [ ] `GET /` responde 200 na URL do Render.
-- [ ] `OPENAI_API_KEY` configurada só no Render (nunca no Git).
-- [ ] `frontend/.env` com `EXPO_PUBLIC_API_URL` em HTTPS.
-- [ ] App reiniciado (`expo start -c` se cache antigo).
-- [ ] Teste `POST /quiz/start` pelo app ou pelo Swagger.
+URL atual da API: **https://quizify-api-339f.onrender.com**
+
+- [x] `GET /` responde 200 na URL do Render.
+- [ ] `OPENAI_API_KEY` configurada no painel Render → Environment (obrigatório para gerar quiz).
+- [x] `frontend/.env` com `EXPO_PUBLIC_API_URL=https://quizify-api-339f.onrender.com`
+- [x] `frontend/eas.json` atualizado com a mesma URL (builds EAS).
+- [ ] App reiniciado (`npx expo start -c`).
+- [ ] Teste `POST /quiz/start` pelo app ou em `/docs`.
+- [ ] Web: `npx expo export --platform web` e deploy de `frontend/dist` (Vercel).
+- [ ] Na Vercel: `EXPO_PUBLIC_API_URL` nas variáveis de build (se o deploy rebuildar no servidor).
 
 ---
 
-## 6. Problemas comuns
+## 7. Problemas comuns
 
 | Sintoma | Solução |
 |---------|---------|
@@ -111,19 +171,21 @@ As variáveis em `eas.json` → `env` → `EXPO_PUBLIC_API_URL` são embutidas n
 | Timeout na primeira chamada | Plano free do Render “acordando”; tente de novo. |
 | 500 ao gerar quiz | Verifique `OPENAI_API_KEY` nos Environment do Render. |
 | CORS | API já usa `allow_origins=["*"]` — suficiente para mobile e Expo Web. |
+| Vercel `404: NOT_FOUND` | Root Directory / `outputDirectory` incorretos; use `vercel.json` da raiz ou `frontend` + redeploy. |
+| Rota do app 404 no Vercel | Rode `npx expo export --platform web` de novo; `public/vercel.json` copia `cleanUrls` para `dist`. |
 
 ---
 
-## 7. Substituir ngrok
+## 8. Substituir ngrok
 
 Antes (dev):
 
 ```bash
-uvicorn app.main:app --reload
+python -m uvicorn app.main:app --reload
 ngrok http 8000
 ```
 
 Depois (produção / testes com celular):
 
-- API fixa: `https://quizify-api.onrender.com`
+- API fixa: `https://quizify-api-339f.onrender.com`
 - App: `EXPO_PUBLIC_API_URL` apontando para essa URL.
