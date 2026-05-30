@@ -86,11 +86,15 @@ echo OPENAI_API_KEY=sk-proj-... > .env
 # 3. Subir a API
 uvicorn app.main:app --reload
 
-# 4. Expor com ngrok (para o frontend acessar)
+# 4. (Dev) Expor com ngrok OU (Produção) deploy no Render — ver DEPLOY.md
 ngrok http 8000
 ```
 
 Documentação interativa: `http://localhost:8000/docs`
+
+### Deploy em produção
+
+Passo a passo completo (Render + `EXPO_PUBLIC_API_URL` + EAS): **[DEPLOY.md](./DEPLOY.md)**
 
 ### Estrutura
 
@@ -114,7 +118,16 @@ backend/
 
 ## 📱 Frontend
 
-> Em desenvolvimento — React Native.
+App **Expo / React Native** em `frontend/`.
+
+```bash
+cd frontend
+cp .env.example .env   # preencha EXPO_PUBLIC_API_URL após o deploy da API
+npm install
+npx expo start
+```
+
+Deploy do app (EAS): ver **[DEPLOY.md](./DEPLOY.md)**.
 
 ---
 

@@ -1,0 +1,16 @@
+# Blueprint Render — https://render.com/docs/blueprint-spec
+# Conecte o repositório GitHub e use "New > Blueprint" ou crie o Web Service manualmente.
+services:
+  - type: web
+    name: quizify-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"
+      - key: OPENAI_API_KEY
+        sync: false
