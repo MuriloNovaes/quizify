@@ -10,7 +10,7 @@
 |---|---|
 | Murilo Barbosa Novaes | [@MuriloNovaes](https://github.com/MuriloNovaes) |
 | Kauã Santos Simplicio | [@KauaSimplicioDEV](https://github.com/KauaSimplicioDEV) |
-| Rodrigo Illydio | — |
+| Rodrigo Illydio | [@digoexec](https://github.com/digoexec) | 
 
 ---
 
