@@ -84,7 +84,7 @@ pip install -r requirements.txt
 echo OPENAI_API_KEY=sk-proj-... > .env
 
 # 3. Subir a API
-uvicorn app.main:app --reload
+python -m uvicorn app.main:app --reload
 
 # 4. (Dev) Expor com ngrok OU (Produção) deploy no Render — ver DEPLOY.md
 ngrok http 8000

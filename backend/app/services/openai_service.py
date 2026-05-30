@@ -1,10 +1,12 @@
-import os
 import json
+from pathlib import Path
+
 from openai import OpenAI
 from dotenv import load_dotenv
 
-# Carrega variáveis de ambiente do arquivo .env
-load_dotenv(override=True)
+# backend/.env (funciona mesmo se o cwd não for a pasta backend)
+_env_path = Path(__file__).resolve().parents[2] / ".env"
+load_dotenv(_env_path, override=True)
 
 class OpenAIService:
     def __init__(self):

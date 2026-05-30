@@ -42,7 +42,7 @@ OPENAI_API_KEY=sk-proj-...
 ## Rodando localmente
 
 ```bash
-uvicorn app.main:app --reload
+python -m uvicorn app.main:app --reload
 ```
 
 - API: `http://localhost:8000`

@@ -93,23 +93,41 @@ A URL da API é embutida no build a partir de `EXPO_PUBLIC_API_URL` no `.env` no
 
 ### Publicar na Vercel
 
-Há `vercel.json` na **raiz do repo** e em `frontend/` — use **uma** das opções:
+O app fica em `frontend/` (monorepo). Existe **só** `frontend/vercel.json`.
 
-**Opção A — Raiz do repositório (recomendado)**
+#### Opção A — GitHub conectado (corrige o 404)
 
-1. [vercel.com](https://vercel.com) → **Add New Project** → importe o repo.
-2. **Root Directory:** deixe vazio (`.`).
-3. O Vercel usa o `vercel.json` da raiz → build em `frontend/`, saída em `frontend/dist`.
-4. **Environment Variables** → `EXPO_PUBLIC_API_URL` = `https://quizify-api-339f.onrender.com`
-5. **Redeploy**.
+No painel da Vercel → projeto → **Settings → Build & Deployment**:
 
-**Opção B — Só a pasta frontend**
+| Campo | Valor |
+|--------|--------|
+| **Root Directory** | `frontend`  ← **causa mais comum do 404** |
+| Framework Preset | Other |
+| Build Command | `npx expo export --platform web` |
+| Output Directory | `dist` |
+| Install Command | `npm install` |
 
-1. **Root Directory:** `frontend`
-2. Usa `frontend/vercel.json` → saída `dist`.
-3. Mesma variável `EXPO_PUBLIC_API_URL`.
+**Settings → Environment Variables:**
 
-> Se aparecer `404: NOT_FOUND` (página da Vercel, não do app): quase sempre **Output Directory** errado ou deploy sem arquivos. Confira em **Deployments → Build Logs** se `frontend/dist/index.html` foi gerado. **Redeploy** após corrigir.
+- `EXPO_PUBLIC_API_URL` = `https://quizify-api-339f.onrender.com`
+
+Depois: **Deployments → Redeploy**.
+
+> Com **Root Directory = `frontend`**, a Vercel lê `frontend/vercel.json` e serve `frontend/dist/index.html`. Se ficar vazio/`.`, dá `404: NOT_FOUND`.
+
+#### Opção B — Deploy direto da pasta `dist` (CLI, sem build na Vercel)
+
+Mais à prova de erro: publica o `dist` já gerado.
+
+```bash
+cd frontend
+npx expo export --platform web   # gera dist/ com a API embutida
+cd dist
+npx vercel login                 # autentica pelo navegador
+npx vercel --prod                # publica esta pasta como site
+```
+
+Como o `dist` tem `index.html` na raiz, a Vercel serve direto — sem build, sem monorepo.
 
 URL final: algo como `https://quizify-app.vercel.app`.
 

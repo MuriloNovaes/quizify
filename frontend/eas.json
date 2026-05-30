@@ -11,12 +11,12 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://SUBSTITUA.onrender.com"
+        "EXPO_PUBLIC_API_URL": "https://quizify-api-339f.onrender.com"
       }
     },
     "production": {
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://SUBSTITUA.onrender.com"
+        "EXPO_PUBLIC_API_URL": "https://quizify-api-339f.onrender.com"
       }
     }
   },
