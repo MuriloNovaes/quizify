@@ -30,7 +30,7 @@ const STEPS: { emoji: string; title: string; body: string }[] = [
   },
   {
     emoji: '❓',
-    title: '3. Responda as 10 questões',
+    title: '3. Responda as 12 questões',
     body: 'Mix de dificuldades (4 fáceis, 4 médias, 2 difíceis). Cada questão tem 25s — seja rápido!',
   },
   {
