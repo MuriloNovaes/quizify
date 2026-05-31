@@ -1,6 +1,6 @@
 # Relatório de QA - Backend Quizify
 
-**Autor:** Manus AI
+**Autor:** Rodrigo Araujo Illydio
 **Data:** 29 de Maio de 2026
 
 ## 1. Introdução
