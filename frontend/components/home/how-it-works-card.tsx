@@ -15,7 +15,7 @@ const STEPS: Step[] = [
     id: '1',
     icon: '🎯',
     title: 'Toque em Jogar',
-    description: 'Inicie o quiz e receba 10 perguntas na hora.',
+    description: 'Inicie o quiz e receba 12 perguntas na hora.',
   },
   {
     id: '2',
