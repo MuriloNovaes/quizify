@@ -24,7 +24,7 @@ export function PlayNowCard({ status, onPlay }: Props) {
           <Text style={[styles.eyebrow, { fontSize: scaleFont(11) }]}>Pronto para um desafio?</Text>
           <Text style={[styles.title, { fontSize: scaleFont(24) }]}>Jogar</Text>
           <Text style={[styles.desc, { fontSize: scaleFont(13), lineHeight: scaleFont(18) }]}>
-            Responda 10 questões de tecnologia com dificuldades misturadas (4 fáceis · 4 médias · 2
+            Responda 12 questões de tecnologia com dificuldades misturadas (4 fáceis · 4 médias · 2
             difíceis).
           </Text>
           {status ? (

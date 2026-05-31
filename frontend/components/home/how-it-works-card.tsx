@@ -20,8 +20,8 @@ const STEPS: Step[] = [
   {
     id: '2',
     icon: '❓',
-    title: 'Responda 10 questões',
-    description: 'Mix de dificuldades: 4 fáceis, 4 médias e 2 difíceis.',
+    title: 'Responda 12 questões',
+    description: 'Mix de dificuldades: 4 fáceis, 4 médias e 4 difíceis.',
   },
   {
     id: '3',
