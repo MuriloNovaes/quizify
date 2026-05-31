@@ -26,12 +26,12 @@ const STEPS: { emoji: string; title: string; body: string }[] = [
   {
     emoji: '🎯',
     title: '2. Toque em Jogar',
-    body: 'Você recebe 10 perguntas de tecnologia. O assunto aparece no texto de cada questão.',
+    body: 'Você recebe 12 perguntas de tecnologia. O assunto aparece no texto de cada questão.',
   },
   {
     emoji: '❓',
     title: '3. Responda as 12 questões',
-    body: 'Mix de dificuldades (4 fáceis, 4 médias, 2 difíceis). Cada questão tem 25s — seja rápido!',
+    body: 'Mix de dificuldades (4 fáceis, 4 médias, 4 difíceis). Cada questão tem 25s — seja rápido!',
   },
   {
     emoji: '💡',

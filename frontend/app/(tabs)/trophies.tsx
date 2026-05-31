@@ -58,7 +58,7 @@ function buildTrophies(attempts: StoredAttempt[]): Trophy[] {
       id: 'perfect',
       emoji: '💯',
       title: 'Sem erros',
-      description: 'Acerte todas as 10 questões.',
+      description: 'Acerte todas as 12 questões.',
       unlocked: anyPerfect,
     },
     {
